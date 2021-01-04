@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#Перевод выделения с помощью Переводчика Гугл
+
+text="$(xsel -o | sed "s/[\"'<>]//g")"
+translate="$(wget -U "Mozilla/5.0" -qO - "http://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=ru&dt=t&q=$text" |  cut -d \" -s -f 2 | grep '[а-я]' | sed 's|\\n||g')"
+echo "$translate" | xclip -selection clipboard
+notify-send --icon=info "$text" "$translate"
+
+# cut -d \" -s -f 2 выбираем первые кавычки в каждой строке ответа
+# grep '[а-я]'      выбираем строки с русскими буквами
+# sed 's|\\n||g'    удаляем лишние переводы строк
